@@ -1,0 +1,67 @@
+from flask import Blueprint, request, jsonify
+from models.product import Product
+from migrations.config import db
+
+product_router = Blueprint('product_router', __name__)
+
+@product_router.route('/products', methods=['GET'])
+def get_all_products():
+    try:
+        all_products = Product.query.all()
+        return jsonify([product.to_dict() for product in all_products])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@product_router.route('/products/<int:id>', methods=['GET'])
+def get_product_by_id(id):
+    product = Product.query.get(ProductID=id)
+    if product:
+        return jsonify(product.to_dict())
+    return jsonify({'error': 'Product not found'}), 404
+
+@product_router.route('/products', methods=['POST'])
+def create_product():
+    data = request.get_json()
+    new_product = Product(
+        ProductCode=data['ProductCode'],
+        ProductName=data['ProductName'],
+        Brand=data.get('Brand'),
+        Price=data['Price'],
+        Unit=data.get('Unit')
+    )
+    db.session.add(new_product)
+    db.session.commit()
+    return jsonify(new_product.to_dict()), 201
+
+@product_router.route('/products/<int:id>', methods=['DELETE'])
+def delete_product(id):
+    product = Product.query.get(ProductID=id)
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+    db.session.delete(product)
+    db.session.commit()
+    return jsonify({'message': 'Product deleted successfully'})
+
+@product_router.route('/products/<int:id>', methods=['PUT'])
+def update_product(id):
+    data = request.get_json(silent=True)
+    product = Product.query.get(ProductID=id)
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+
+    product.ProductCode = data.get('ProductCode', product.ProductCode)
+    product.ProductName = data.get('ProductName', product.ProductName)
+    product.Brand = data.get('Brand', product.Brand)
+    product.Price = data.get('Price', product.Price)
+    product.Unit = data.get('Unit', product.Unit)
+
+    db.session.commit()
+    return jsonify(product.to_dict())
+
+@product_router.route('/products/search', methods=['GET'])
+def search_products():
+    query = request.args.get('q', '')
+    results = Product.query.filter(Product.ProductName.ilike(f'%{query}%')).all()
+    if not results:
+        return jsonify({'error': 'No products found'}), 404
+    return jsonify([product.to_dict() for product in results])
