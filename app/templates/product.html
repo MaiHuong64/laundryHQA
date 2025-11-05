@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Sản Phẩm - Tối Giản</title>
+    <title>Quản Lý Sản Phẩm</title>
     <link rel="stylesheet" href="../public/output.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -53,16 +53,10 @@
                         >
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i class="fas fa-search"></i></span>
                     </div>
-                    <button 
-                        onclick="openAddModal()"
-                        class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-md"
-                    >
+                    <button class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-md">
                         <i class="fas fa-plus mr-2"></i> Thêm Sản Phẩm
                     </button>
-                    <button 
-                        onclick="exportData()"
-                        class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm"
-                    >
+                    <button class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm">
                         <i class="fas fa-file-export mr-2"></i> Xuất Excel
                     </button>
                 </div>
@@ -76,15 +70,19 @@
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Thương Hiệu</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Giá</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Đơn Vị</th>
-                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Thao Tác</th>
+                                
                             </tr>
                         </thead>
                         <tbody >
-                           {%for p in products %}
-                            <tr>
-                                <td>{{p.productId}}</td>
-                            </tr>
-                            {%endfor%}
+                            {% for p in products %}
+                                <tr>
+                                    <td>{{ p.ProductCode }}</td>
+                                    <td>{{ p.ProductName }}</td>
+                                    <td>{{ p.Brand }}</td>
+                                    <td>{{ "{:,.0f}đ".format(p.Price) }}</td>
+                                    <td>{{ p.Unit }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -95,7 +93,7 @@
             <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fade-in">
                 <div class="bg-gray-50 text-gray-800 p-6 rounded-t-xl border-b border-gray-200 flex justify-between items-center">
                     <h2 id="modalTitle" class="text-2xl font-bold">Thêm Sản Phẩm Mới</h2>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+                    <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
                 </div>
                 
                <form id="productForm" class="p-6">
@@ -129,186 +127,11 @@
                 </form>
                 
                 <div class="px-6 py-4 border-t border-gray-200 flex gap-3 justify-end">
-                    <button 
-                        onclick="closeModal()"
-                        class="px-5 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-all"
-                    >
-                        Hủy
-                    </button>
-                    <button 
-                        onclick="saveProduct()"
-                        class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow-md"
-                    >
-                        Lưu
+                    <button class="px-5 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-all">Hủy</button>
+                    <button class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow-md">Lưu
                     </button>
                 </div>
             </div>
         </div>
-
-        <script>
-            let products = [
-                {id: 1, code: 'NVU07', name: 'Đồ NV điều dưỡng nữ mẫu 2024', brand: 'NVU', price: 573, unit: 'gr'},
-                {id: 2, code: 'NVU02', name: 'Đồ NV - Điều dưỡng (trắng)', brand: 'NVU', price: 420, unit: 'gr'}
-            ];
-
-            let nextId = 3;
-            let editingId = null;
-
-            function renderProducts(filter = '') {
-                const tbody = document.getElementById('productTableBody');
-                const filtered = products.filter(p => 
-                    p.code.toLowerCase().includes(filter.toLowerCase()) ||
-                    p.name.toLowerCase().includes(filter.toLowerCase()) ||
-                    (p.brand && p.brand.toLowerCase().includes(filter.toLowerCase()))
-                );
-
-                if (filtered.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="px-6 py-16 text-center text-gray-400">
-                                <svg class="w-20 h-20 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                </svg>
-                                <h3 class="text-lg font-semibold">Không tìm thấy sản phẩm</h3>
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                tbody.innerHTML = filtered.map(p => `
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4">
-                            <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 text-sm font-semibold rounded">${p.code}</span>
-                        </td>
-                        <td class="px-6 py-4 font-medium text-gray-900">${p.name}</td>
-                        <td class="px-6 py-4 text-gray-600">${p.brand || '<em class="text-gray-400">Chưa có</em>'}</td>
-                        <td class="px-6 py-4 font-bold text-indigo-600">${p.price.toLocaleString('vi-VN')}đ</td>
-                        <td class="px-6 py-4 text-gray-600">${p.unit}</td>
-                        <td class="px-6 py-4">
-                            <div class="flex gap-2">
-                                <button 
-                                    onclick="editProduct(${p.id})"
-                                    class="p-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors shadow-sm text-sm"
-                                >
-                                    <i class="fas fa-pen"></i> Sửa
-                                </button>
-                                <button 
-                                    onclick="deleteProduct(${p.id})"
-                                    class="p-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors shadow-sm text-sm"
-                                >
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-
-                updateStats();
-            }
-
-            function updateStats() {
-                document.getElementById('totalProducts').textContent = products.length;
-                const avgPrice = products.length > 0 
-                    ? Math.round(products.reduce((sum, p) => sum + p.price, 0) / products.length)
-                    : 0;
-                document.getElementById('avgPrice').textContent = avgPrice.toLocaleString('vi-VN') + 'đ';
-                document.getElementById('brandedProducts').textContent = 
-                    products.filter(p => p.brand).length;   
-            }
-
-            function openAddModal() {
-                editingId = null;
-                document.getElementById('modalTitle').textContent = 'Thêm Sản Phẩm Mới';
-                document.getElementById('productForm').reset();
-                document.getElementById('productId').value = '';
-                document.getElementById('productModal').classList.remove('hidden');
-            }
-
-            function editProduct(id) {
-                const product = products.find(p => p.id === id);
-                if (!product) return;
-
-                editingId = id;
-                document.getElementById('modalTitle').textContent = 'Chỉnh Sửa Sản Phẩm';
-                document.getElementById('productId').value = product.id;
-                document.getElementById('productCode').value = product.code;
-                document.getElementById('productName').value = product.name;
-                document.getElementById('brand').value = product.brand || '';
-                document.getElementById('price').value = product.price;
-                document.getElementById('unit').value = product.unit;
-                document.getElementById('productModal').classList.remove('hidden');
-            }
-
-            function closeModal() {
-                document.getElementById('productModal').classList.add('hidden');
-                document.getElementById('productForm').reset();
-                editingId = null;
-            }
-
-            function saveProduct() {
-                const code = document.getElementById('productCode').value.trim();
-                const name = document.getElementById('productName').value.trim();
-                const brand = document.getElementById('brand').value.trim();
-                const price = parseFloat(document.getElementById('price').value);
-                const unit = document.getElementById('unit').value.trim();
-
-                if (!code || !name || isNaN(price) || !unit) { 
-                    alert('Vui lòng điền đầy đủ thông tin bắt buộc và giá phải là số!');
-                    return;
-                }
-
-                if (editingId) {
-                    const index = products.findIndex(p => p.id === editingId);
-                    products[index] = {
-                        id: editingId,
-                        code, name, brand, price, unit
-                    };
-                } else {
-                    products.push({
-                        id: nextId++,
-                        code, name, brand, price, unit
-                    });
-                }
-
-                renderProducts();
-                closeModal();
-            }
-
-            function deleteProduct(id) {
-                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                    products = products.filter(p => p.id !== id);
-                    renderProducts();
-                }
-            }
-
-            function exportData() {
-                let csv = 'Mã SP,Tên Sản Phẩm,Thương Hiệu,Giá,Đơn Vị\n';
-                products.forEach(p => {
-                    csv += `${p.code},"${p.name}","${p.brand || ''}",${p.price},${p.unit}\n`;
-                });
-
-                const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'products_' + new Date().toISOString().slice(0,10) + '.csv';
-                link.click();
-            }
-
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                renderProducts(e.target.value);
-            });
-
-            // Close modal on background click
-            document.getElementById('productModal').addEventListener('click', (e) => {
-                if (e.target.id === 'productModal') {
-                    closeModal();
-                }
-            });
-
-            // Initial render
-            renderProducts();
-        </script>
     </body>
 </html>

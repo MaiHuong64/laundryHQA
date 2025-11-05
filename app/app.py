@@ -4,7 +4,7 @@ from migrations.config import db
 from routers.product_router import product_router
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='public', template_folder='templates')
     app.config['JSON_AS_ASCII'] = False
     config_info(app)
 
