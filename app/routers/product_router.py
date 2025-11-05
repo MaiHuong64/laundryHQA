@@ -6,19 +6,15 @@ product_router = Blueprint('product_router', __name__)
 
 @product_router.route('/', methods=['GET'])
 def get_all_products():
-    try:
-        all_products = Product.query.all()
-        # return jsonify([product.to_dict() for product in all_products])
-        return render_template('product.html', products=all_products)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    all_products = Product.query.all()
+    return render_template('product.html', products=all_products)
 
 @product_router.route('/<int:id>', methods=['GET'])
 def get_product_by_id(id):
     product = Product.query.get(ProductID=id)
-    if product:
-        return jsonify(product.to_dict())
-    return jsonify({'error': 'Product not found'}), 404
+    if not product:
+        return render_template('product.html', products=[],error='Product not found'), 404
+    return render_template('product.html', products=[product])
 
 @product_router.route('/', methods=['POST'])
 def create_product():
@@ -32,7 +28,7 @@ def create_product():
     )
     db.session.add(new_product)
     db.session.commit()
-    return jsonify(new_product.to_dict()), 201
+    return render_template('product.html', products=[new_product]), 201
 
 @product_router.route('/<int:id>', methods=['DELETE'])
 def delete_product(id):
@@ -41,7 +37,7 @@ def delete_product(id):
         return jsonify({'error': 'Product not found'}), 404
     db.session.delete(product)
     db.session.commit()
-    return jsonify({'message': 'Product deleted successfully'})
+    return render_template('product.html', products=[]), 204
 
 @product_router.route('/<int:id>', methods=['PUT'])
 def update_product(id):
@@ -57,12 +53,12 @@ def update_product(id):
     product.Unit = data.get('Unit', product.Unit)
 
     db.session.commit()
-    return jsonify(product.to_dict())
+    return render_template('product.html', products=[product])
 
 @product_router.route('/search', methods=['GET'])
 def search_products():
     query = request.args.get('q', '')
     results = Product.query.filter(Product.ProductName.ilike(f'%{query}%')).all()
     if not results:
-        return jsonify({'error': 'No products found'}), 404
-    return jsonify([product.to_dict() for product in results])
+       return render_template('product.html', products=[], error='No products found matching the query'), 404
+    return render_template('product.html', products=results)
