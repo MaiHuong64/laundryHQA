@@ -12,7 +12,6 @@ def create_app():
     def home():
         return "Welcome to the Invoice Management System"
     app.register_blueprint(product_router, url_prefix='/products')
-
     return app
 
 

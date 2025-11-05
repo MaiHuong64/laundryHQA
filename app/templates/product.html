@@ -18,41 +18,41 @@
         }
     </style>
     </head>
-    <body class="bg-gray-100 min-h-screen p-4 md:p-8">
+    <body class="bg-gray-10 min-h-screen p-4 md:p-8">
         <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
             
-            <div class="bg-gray-50 text-gray-800 p-6 border-b border-gray-200 text-center">
-                <h1 class="text-3xl md:text-4xl font-bold mb-1">📋 Quản Lý Sản Phẩm</h1>
-                <p class="text-sm text-gray-500">Hệ thống quản lý sản phẩm tối giản và hiệu quả</p>
+            <div class="bg-gray-50 text-gray-800 p-6 border-b border-gray-200 text-left">
+                <h1 class="text-3xl md:text-3xl font-bold ">📋 Quản Lý Sản Phẩm</h1>
+
             </div>
 
-            <div class="p-6 md:p-8">
+            <div class="p-6 md:p-6  space-y-6">
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200">
                         <h3 class="text-xs font-semibold uppercase text-gray-500 mb-1">Tổng Sản Phẩm</h3>
-                        <p class="text-3xl font-extrabold text-indigo-700" id="totalProducts">0</p>
+                        <p class="text-3xl font-extrabold text-blue-600" id="totalProducts">{{ products|length }}</p>
                     </div>
                     <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200">
                         <h3 class="text-xs font-semibold uppercase text-gray-500 mb-1">Giá Trị Trung Bình</h3>
-                        <p class="text-3xl font-extrabold text-green-600" id="avgPrice">0đ</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200">
-                        <h3 class="text-xs font-semibold uppercase text-gray-500 mb-1">Sản Phẩm Có Thương Hiệu</h3>
-                        <p class="text-3xl font-extrabold text-gray-700" id="brandedProducts">0</p>
+                        {% set total_price = 0 %}
+                        {% for p in products %}
+                            {% set total_price = total_price + p.Price %}
+                        {% endfor %}
+                        {% set avg = total_price / (products|length) %}
+                        {% set avg = "{:,.0f}đ".format(avg) %}
+                        <p class="text-3xl font-extrabold text-blue-600" id="totalProducts">{{avg}}</p>
                     </div>
                 </div>
 
                 <div class="flex flex-col md:flex-row gap-4 mb-8">
+                    <!-- Search for products -->
                     <div class="flex-1 relative">
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Tìm kiếm sản phẩm theo mã, tên, thương hiệu..."
-                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all"
-                        >
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm theo mã, tên, thương hiệu..." class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all">
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i class="fas fa-search"></i></span>
                     </div>
+
+                    <!-- add product and export buttons -->
                     <button class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-md">
                         <i class="fas fa-plus mr-2"></i> Thêm Sản Phẩm
                     </button>
