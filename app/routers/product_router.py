@@ -58,7 +58,11 @@ def update_product(id):
 @product_router.route('/search', methods=['GET'])
 def search_products():
     query = request.args.get('q', '')
-    results = Product.query.filter(Product.ProductName.ilike(f'%{query}%')).all()
+    results = Product.query.filter(
+        Product.ProductCode.ilike(f'%{query}%'),
+        Product.ProductName.ilike(f'%{query}%'),
+        Product.Brand.ilike(f'%{query}%')
+    ).all()
     if not results:
        return render_template('product.html', products=[], error='No products found matching the query'), 404
     return render_template('product.html', products=results)
