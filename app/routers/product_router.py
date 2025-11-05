@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from models.product import Product
 from migrations.config import db
 
@@ -8,7 +8,8 @@ product_router = Blueprint('product_router', __name__)
 def get_all_products():
     try:
         all_products = Product.query.all()
-        return jsonify([product.to_dict() for product in all_products])
+        # return jsonify([product.to_dict() for product in all_products])
+        return render_template('product.html', products=all_products)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
