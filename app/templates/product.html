@@ -39,12 +39,12 @@
                         {% for p in products %}
                             {% set total_price = total_price + p.Price %}
                         {% endfor %}
+                        
                         {% if (products|length) > 0 %}
-                          { % set avg = total_price / (products|length) %}
-                            {% set avg = "{:,.0f}đ".format(avg) %}
+                            {% set avg = total_price / (products|length) %}
+                            {% set avg = "{:,.0f}".format(avg) ~ 'đ' %}
                         {% else %}
-                            {% set avg = "0đ".format(avg) %}
-                            
+                            {% set avg = "0" ~ 'đ' %}
                         {% endif %}
                         
                         <p class="text-3xl font-extrabold text-blue-600" id="totalProducts">{{avg}}</p>
@@ -63,13 +63,25 @@
                         {% endif %}
                     </form>
 
-                    <!-- add product and export buttons -->
-                    <button class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-md">
-                        <i class="fas fa-plus mr-2"></i> Thêm Sản Phẩm
-                    </button>
+                    <!-- add product -->
+                    <form action="{{url_for('product_router.create_product')}}" method="post">
+                        <button type="submit" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md">
+                            <i class="fas fa-plus mr-2"></i> Thêm Sản Phẩm
+                        </button>
+                        <div class="group-placeholder-shown:">
+                            <label for=""></label>
+                        </div>
+                        {% if error %}
+                            <p class="text-red-500 ml-4 self-center">{{ error }}</p>
+                        {% endif %}
+                    </form>
+
+                    <!-- export buttons  -->
                     <button class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm">
                         <i class="fas fa-file-export mr-2"></i> Xuất Excel
                     </button>
+
+
                 </div>
 
                 <div class="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
