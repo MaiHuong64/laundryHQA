@@ -39,11 +39,12 @@
                         {% for p in products %}
                             {% set total_price = total_price + p.Price %}
                         {% endfor %}
-                        {% if (products|length) == 0 %}
-                            {% set avg = 0 %}
-                        {% else %}
-                            {% set avg = total_price / (products|length) %}
+                        {% if (products|length) > 0 %}
+                          { % set avg = total_price / (products|length) %}
                             {% set avg = "{:,.0f}đ".format(avg) %}
+                        {% else %}
+                            {% set avg = "0đ".format(avg) %}
+                            
                         {% endif %}
                         
                         <p class="text-3xl font-extrabold text-blue-600" id="totalProducts">{{avg}}</p>

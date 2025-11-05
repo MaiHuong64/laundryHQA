@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, render_template
 from models.product import Product
 from migrations.config import db
+from sqlalchemy import or_
 
 product_router = Blueprint('product_router', __name__)
 
@@ -59,9 +60,11 @@ def update_product(id):
 def search_products():
     query = request.args.get('q', '')
     results = Product.query.filter(
-        Product.ProductCode.ilike(f'%{query}%'),
-        Product.ProductName.ilike(f'%{query}%'),
-        Product.Brand.ilike(f'%{query}%')
+        or_(
+            Product.ProductCode.ilike(f'%{query}%'),
+            Product.ProductName.ilike(f'%{query}%'),
+            Product.Brand.ilike(f'%{query}%')
+        )
     ).all()
     if not results:
        return render_template('product.html', products=[], error='No products found matching the query'), 404
