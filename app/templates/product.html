@@ -39,18 +39,28 @@
                         {% for p in products %}
                             {% set total_price = total_price + p.Price %}
                         {% endfor %}
-                        {% set avg = total_price / (products|length) %}
-                        {% set avg = "{:,.0f}đ".format(avg) %}
+                        {% if (products|length) == 0 %}
+                            {% set avg = 0 %}
+                        {% else %}
+                            {% set avg = total_price / (products|length) %}
+                            {% set avg = "{:,.0f}đ".format(avg) %}
+                        {% endif %}
+                        
                         <p class="text-3xl font-extrabold text-blue-600" id="totalProducts">{{avg}}</p>
                     </div>
                 </div>
 
                 <div class="flex flex-col md:flex-row gap-4 mb-8">
                     <!-- Search for products -->
-                    <div class="flex-1 relative">
-                        <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm theo mã, tên, thương hiệu..." class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all">
-                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i class="fas fa-search"></i></span>
-                    </div>
+                    <form action="{{url_for('product_router.search_products')}}" method="get" class="flex w-full md:w-1/2">
+                        <input type="text" name="q" placeholder="Tìm kiếm sản phẩm..." class="w-full px-4 py-3 border border-gray-300 rounded-l-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all">
+                        <button type="submit" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-r-xl hover:bg-indigo-700 transition-all shadow-md">
+                            <i class="fas fa-search mr-2"></i> Tìm Kiếm
+                        </button>
+                        {%if error %}
+                            <p class="text-red-500 ml-4 self-center">{{ error }}</p>
+                        {% endif %}
+                    </form>
 
                     <!-- add product and export buttons -->
                     <button class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-md">
