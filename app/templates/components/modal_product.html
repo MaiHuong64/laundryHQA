@@ -1,0 +1,45 @@
+{% macro add_product() %}
+<div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fade-in">
+        <div class="bg-gray-50 text-gray-800 p-6 rounded-t-xl border-b border-gray-200 flex justify-between items-center">
+            <h2 id="modalTitle" class="text-2xl font-bold">Thêm Sản Phẩm Mới</h2>
+            <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+        </div>
+                
+        <form id="productForm" class="p-6">
+            <input type="hidden" id="productId">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700" for="productCode">Mã Sản Phẩm <span class="text-red-500">*</span></label>
+                    <input type="text" id="productCode" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: NVU07">
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700" for="productName">Tên Sản Phẩm <span class="text-red-500">*</span></label>
+                    <input type="text" id="productName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: Đồ NV điều dưỡng nữ mẫu 2024">
+                    </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700" for="brand">Thương Hiệu</label>
+                    <input type="text" id="brand" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: NVU">
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700" for="price">Giá (VNĐ) <span class="text-red-500">*</span></label>
+                    <input type="number" id="price" required min="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: 573000">
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700" for="unit">Đơn Vị <span class="text-red-500">*</span></label>
+                    <input type="text" id="unit" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: Cái/Bộ/gr">
+                </div>
+            </div>
+        </form>
+                
+        <div class="px-6 py-4 border-t border-gray-200 flex gap-3 justify-end">
+            <button class="px-5 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-all">Hủy</button>
+            <button class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow-md">Lưu</button>
+        </div>
+    </div>
+</div>
+{%- endmacro %}
