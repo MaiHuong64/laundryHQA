@@ -42,19 +42,19 @@ def delete_product(id):
 
 @product_router.route('/<int:id>', methods=['PUT'])
 def update_product(id):
-    # data = request.get_json(silent=True)
-    # product = Product.query.get(ProductID=id)
-    # if not product:
-    #     return jsonify({'error': 'Product not found'}), 404
+    data= request.get_json(silent=True)
+    product = Product.query.get(ProductID=id)
+    if not product:
+        return render_template('product.html', products=[], error='Product not found'), 404
+    product.ProductCode = data.get('ProductCode', product.ProductCode)
+    product.ProductName = data.get('ProductName', product.ProductName)
+    product.Brand = data.get('Brand', product.Brand)
+    product.Price = data.get('Price', product.Price)
+    product.Unit = data.get('Unit', product.Unit)
 
-    # product.ProductCode = data.get('ProductCode', product.ProductCode)
-    # product.ProductName = data.get('ProductName', product.ProductName)
-    # product.Brand = data.get('Brand', product.Brand)
-    # product.Price = data.get('Price', product.Price)
-    # product.Unit = data.get('Unit', product.Unit)
-
-    # db.session.commit()
-    # data = get 
+    db.session.commit()
+    db.session.refresh(product)
+    db.session.close()
     return render_template('product.html', products=[product])
 
 @product_router.route('/search', methods=['GET'])
