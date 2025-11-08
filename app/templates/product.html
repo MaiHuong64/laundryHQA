@@ -1,96 +1,178 @@
-{% import 'components/modal_product.html' as modal %}
-{% extends "base.html" %}
-
-{% block title %} Quản Lý Sản Phẩm {% endblock %}
-{% block styles%}
+{% import 'components/modal_product.html' as modal %} {% extends "base.html" %}
+{% block title %} Quản Lý Sản Phẩm {% endblock %} {% block styles%}
 <style>
-    body { font-family: 'Inter', sans-serif; }
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fade-in 0.3s ease-out forwards;
-        }
-    </style>
-{% endblock %}
-{% block content %}
-<div class="max-w-7xl mx-auto bg-white rounded-xl border-amber-50 overflow-hidden">
-            
-    <div class="bg-gray-50 text-gray-800 p-6 border-b border-gray-200 text-left">
-        <h1 class="text-3xl md:text-3xl font-bold ">📋 Quản Lý Sản Phẩm</h1>
+  body {
+    font-family: "Inter", sans-serif;
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+  }
+</style>
+{% endblock %} {% block content %}
+<div
+  class="max-w-7xl mx-auto bg-white rounded-xl border-amber-50 overflow-hidden"
+>
+  <div class="bg-gray-50 text-gray-800 p-6 border-b border-gray-200 text-left">
+    <h1 class="text-3xl md:text-3xl font-bold">📋 Quản Lý Sản Phẩm</h1>
+  </div>
+
+  <div class="p-6 md:p-6 space-y-6 flex justify-baseline flex-col">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white p-5 rounded-xl sw-md border border-gray-200">
+        <h3 class="text-xs font-semibold uppercase text-gray-500 mb-1">
+          Tổng Sản Phẩm
+        </h3>
+        <p class="text-2xl font-medium text-blue-600" id="totalProducts">
+          {{ products|length}}
+        </p>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-gray-200">
+        <h3 class="text-xs font-semibold uppercase text-gray-500 mb-1">
+          Giá Trị Trung Bình
+        </h3>
+        {% set total_price = 0 %} {% for p in products %} {% set total_price =
+        total_price + p.Price %} {% endfor %} {% if (products|length) > 0 %} {%
+        set avg = total_price / (products|length) %} {% set avg =
+        "{:,.0f}".format(avg) ~ 'đ' %} {% else %} {% set avg = "0" ~ 'đ' %} {%
+        endif %}
+
+        <p class="text-3xl font-extrabold text-blue-600" id="totalProducts">
+          {{avg}}
+        </p>
+      </div>
     </div>
 
-    <div class="p-6 md:p-6  space-y-6 flex justify-baseline flex-col">
-                
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-5 rounded-xl sw-md border border-gray-200">
-                <h3 class="text-xs font-semibold uppercase text-gray-500 mb-1">Tổng Sản Phẩm</h3>
-                <p class="text-2xl font-medium text-blue-600" id="totalProducts">{{ products|length}}</p>
-            </div>
-            <div class="bg-white p-5 rounded-xl border border-gray-200">
-                <h3 class="text-xs font-semibold uppercase text-gray-500 mb-1">Giá Trị Trung Bình</h3>
-                {% set total_price = 0 %}
-                {% for p in products %}
-                    {% set total_price = total_price + p.Price %}
-                {% endfor %}
-                        
-                {% if (products|length) > 0 %}
-                    {% set avg = total_price / (products|length) %}
-                    {% set avg = "{:,.0f}".format(avg) ~ 'đ' %}
-                {% else %}
-                    {% set avg = "0" ~ 'đ' %}
-                {% endif %}
-                        
-                <p class="text-3xl font-extrabold text-blue-600" id="totalProducts">{{avg}}</p>
-            </div>
-        </div>
+    <div
+      class="flex flex-col md:flex-row md:items-center justify-start gap-4 mb-8 w-full"
+    >
+      <form
+        action="{{ url_for('product_router.search_products') }}"
+        method="get"
+        class="flex w-full md:w-1/2 relative"
+      >
+        <span
+          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        >
+          <i class="fas fa-search"></i>
+        </span>
+        <input
+          id="value"
+          type="text"
+          name="q"
+          placeholder="Tìm kiếm sản phẩm..."
+          class="flex-grow pl-10 pr-4 py-3 border border-gray-300 rounded-l-xl text-gray-700 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200"
+        />
+        <button
+          id="btnSearch"
+          type="submit"
+          class="px-4 py-3 bg-indigo-600 text-white font-semibold rounded-r-xl hover:bg-indigo-700 active:bg-indigo-800 focus:ring-2 focus:ring-indigo-300 transition-all duration-200 flex items-center justify-center"
+        >
+          Tìm
+        </button>
+      </form>
 
-        <div class="flex flex-col md:flex-row md:items-center justify-start gap-4 mb-8 w-full">
-            <form action="{{ url_for('product_router.search_products') }}" method="get" class="flex w-full md:w-1/2 relative">
-                       
-                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <i class="fas fa-search"></i>
-                </span>
-                <input type="text" name="q" placeholder="Tìm kiếm sản phẩm..." class="flex-grow pl-10 pr-4 py-3 border border-gray-300 rounded-l-xl text-gray-700 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200" />
-                <button type="submit" class="px-4 py-3 bg-indigo-600 text-white font-semibold rounded-r-xl hover:bg-indigo-700 active:bg-indigo-800 focus:ring-2 focus:ring-indigo-300 transition-all duration-200 flex items-center justify-center">Tìm</button>
-            </form>
-
-                    <!-- Add product -->
-                <button id="openModal" type="submit" class="flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md duration-200"><i class="fas fa-plus mr-2"></i> Thêm</button>
-                {{ modal.add_product() }}
-                    <!-- Export button -->
-            <button class="flex items-center justify-center px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm"><i class="fas fa-file-export mr-2"></i> Xuất Excel</button>
-
-        </div>
-        <div class="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
-            <table class="w-full">
-                <thead class="bg-gray-100 border-b border-gray-200">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Mã SP</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Tên Sản Phẩm</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Thương Hiệu</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Giá</th>                                
-                        <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Đơn Vị</th>
-                    </tr>
-                </thead>
-                <tbody >
-                    {% for p in products %}
-                    <tr>
-                        <td class="px-6 py-4 text-gray-800 text-sm">{{ p.ProductCode }}</td>
-                        <td class="px-6 py-4 text-gray-800 text-sm font-medium">{{ p.ProductName }}</td>
-                        <td class="px-6 py-4 text-gray-600 text-sm">{{ p.Brand }}</td>
-                        <td class="px-6 py-4 text-center text-gray-800 text-sm font-semibold">{{ "{:,.0f}đ".format(p.Price) }}</td>
-                        <td class="px-6 py-4 text-center text-gray-700 text-sm">{{ p.Unit }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>  
+      <!-- Add product -->
+      <button
+        id="openModal"
+        type="submit"
+        class="flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md duration-200"
+      >
+        <i class="fas fa-plus mr-2"></i> Thêm
+      </button>
+      {{ modal.add_product() }}
+      <!-- Export button -->
+      <button
+        class="flex items-center justify-center px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm">
+        <i class="fas fa-file-export mr-2"></i> Xuất Excel
+      </button>
+    </div>
+    <div class="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
+      <table class="w-full">
+        <thead class="bg-gray-100 border-b border-gray-200">
+          <tr>
+            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Mã SP</th>
+            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Tên Sản Phẩm </th>
+            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600" >Thương Hiệu </th>
+            <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Giá</th>
+            <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Đơn Vị</th>
+          </tr>
+        </thead>
+        <tbody id="product_list"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script>
+    function render(data) {
+    const productList = document.getElementById("product_list");
+    productList.innerHTML = "";
+    console.log(data);
+    if (data.length === 0) {
+      const row = `
+            <tr>
+                <td colspan="5" class="px-6 py-4 text-center text-gray-500 text-sm">Không tìm thấy sản phẩm nào.</td>
+            </tr>
+            `;
+      productList.insertAdjacentHTML("beforeend", row);
+      return;
+    }
+    data.forEach((p) => {
+      const row = `
+            <tr>
+                <td class="px-6 py-4 text-gray-800 text-sm">${
+                  p.ProductCode
+                }</td>
+                <td class="px-6 py-4 text-gray-800 text-sm font-medium">${
+                  p.ProductName
+                }</td>
+                <td class="px-6 py-4 text-gray-600 text-sm">${p.Brand}</td>
+                <td class="px-6 py-4 text-center text-gray-800 text-sm font-semibold">${Number(
+                  p.Price
+                ).toLocaleString("vi-VN")}đ</td>
+                <td class="px-6 py-4 text-center text-gray-700 text-sm">${
+                  p.Unit
+                }</td>
+            </tr>
+            `;
+      productList.insertAdjacentHTML("beforeend", row);
+    });
+  }
+  async function LoadData() {
+    const response = await fetch(
+      '{{ url_for("product_router.get_products") }}'
+    );
+    // const response = await fetch('/products');
+    const data = await response.json();
+    render(data);
+  }
+  document.addEventListener("DOMContentLoaded", LoadData);
+
+  document.getElementById('btnSearch').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const keyword = document.getElementById('value').value;
+    let data;
+    if (keyword === ""){
+        const response = await fetch('{{ url_for("product_router.get_products") }}');
+        data = await response.json();
+    }
+    else{
+        const response = await fetch(`/products/search?q=${keyword}`);
+        data = await response.json();
+    }
+    render(data);
+  })
+
     document.addEventListener('DOMContentLoaded', ()=>{
         const openModalBtn = document.getElementById('openModal');
         const modal = document.getElementById('productModal');
