@@ -20,9 +20,8 @@ def get_product_by_id(id):
         return jsonify(product.to_dict())
     return jsonify({'error': 'Product not found'}), 404
 
-@product_router.route('/create', methods=['GET','POST'])
+@product_router.route('/create', methods=['POST'])
 def handel_products():
-    if request.method == "POST":
         data = request.get_json()
         try:
             new_product = Product(
@@ -38,9 +37,7 @@ def handel_products():
         except Exception as e:
             db.session.rollback();
             return jsonify({'error': str(e)}), 400
-    
-    all_products = Product.query.all()
-    return jsonify([product.to_dict() for product in all_products])
+
 
 @product_router.route('/delete/<int:id>', methods=['DELETE'])
 def delete_product(id):
