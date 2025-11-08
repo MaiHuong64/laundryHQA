@@ -1,3 +1,4 @@
+import request;
 {% macro add_product() %}
 <div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fade-in">
@@ -11,35 +12,58 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
-                    <label class="block text-sm font-medium text-gray-700" for="productCode">Mã Sản Phẩm <span class="text-red-500">*</span></label>
-                    <input type="text" id="productCode" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: NVU07">
+                    <label class="block text-sm font-medium text-gray-700" for="ProductCode">Mã Sản Phẩm <span class="text-red-500">*</span></label>
+                    <input type="text" id="ProductCode" name="ProductCode" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: NVU07">
                 </div>
                 <div class="space-y-4">
                     <label class="block text-sm font-medium text-gray-700" for="productName">Tên Sản Phẩm <span class="text-red-500">*</span></label>
-                    <input type="text" id="productName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: Đồ NV điều dưỡng nữ mẫu 2024">
+                    <input type="text" id="ProductName" name="ProductName"required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: Đồ NV điều dưỡng nữ mẫu 2024">
                     </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                 <div class="space-y-4">
                     <label class="block text-sm font-medium text-gray-700" for="brand">Thương Hiệu</label>
-                    <input type="text" id="brand" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: NVU">
+                    <input type="text" id="brand" name="Brand" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: NVU">
                 </div>
                 <div class="space-y-4">
                     <label class="block text-sm font-medium text-gray-700" for="price">Giá (VNĐ) <span class="text-red-500">*</span></label>
-                    <input type="number" id="price" required min="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: 573000">
+                    <input type="number" id="price"  name="Price" required min="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: 573000">
                 </div>
                 <div class="space-y-4">
                     <label class="block text-sm font-medium text-gray-700" for="unit">Đơn Vị <span class="text-red-500">*</span></label>
-                    <input type="text" id="unit" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: Cái/Bộ/gr">
+                    <input type="text" id="unit" name="Unit" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 focus:outline-none transition-all" placeholder="Ví dụ: Cái/Bộ/gr">
                 </div>
             </div>
+       
+            <div class="px-6 py-4 border-t border-gray-200 flex gap-3 justify-end">
+                <button id="cancle" class="px-5 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-all">Hủy</button>
+                <button type="submit" id="saveProduct" class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow-md">Lưu</button>
+            </div>
         </form>
-                
-        <div class="px-6 py-4 border-t border-gray-200 flex gap-3 justify-end">
-            <button id="cancle" class="px-5 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-all">Hủy</button>
-            <button id="saveProduct" class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow-md">Lưu</button>
-        </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('productForm').addEventListener('submit', async (e) =>{
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        const request = await fetch("{{url_for('product_router.handel_products')}}",{
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        if (!request.ok){
+            const err = await request.json();
+            console.log(err);
+            return;
+        }
+        const result = await request.json();
+        console.log("Server trả:", result);
+        alert("Đã lưu sản phẩm: " + result.message);
+        console.log(data)
+        console.log("da nhan 1 lan")
+    })
+</script>
 {%- endmacro %}

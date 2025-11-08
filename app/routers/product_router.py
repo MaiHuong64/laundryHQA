@@ -20,18 +20,27 @@ def get_product_by_id(id):
         return jsonify(product.to_dict())
     return jsonify({'error': 'Product not found'}), 404
 
-@product_router.route('/create', methods=['POST'])
-def create_product():
-    data = request.get_json()
-    new_product = Product(
-        ProductName=data['ProductName'],
-        Brand=data.get('Brand'),
-        Price=data['Price'],
-        Unit=data.get('Unit')
-    )
-    db.session.add(new_product)
-    db.session.commit()
-    return jsonify(new_product.to_dict()), 201
+@product_router.route('/create', methods=['GET','POST'])
+def handel_products():
+    if request.method == "POST":
+        data = request.get_json()
+        try:
+            new_product = Product(
+                ProductCode=data['ProductCode'],
+                ProductName=data['ProductName'],
+                Brand=data.get('Brand'),
+                Price=data['Price'],
+                Unit=data.get('Unit')
+            )
+            db.session.add(new_product)
+            db.session.commit()
+            return jsonify(new_product.to_dict()), 201
+        except Exception as e:
+            db.session.rollback();
+            return jsonify({'error': str(e)}), 400
+    
+    all_products = Product.query.all()
+    return jsonify([product.to_dict() for product in all_products])
 
 @product_router.route('/delete/<int:id>', methods=['DELETE'])
 def delete_product(id):
