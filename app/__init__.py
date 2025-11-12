@@ -8,11 +8,14 @@ def create_app():
     app = Flask(__name__, static_folder='public', template_folder='templates')
     app.config['JSON_AS_ASCII'] = False
     config_info(app)
-    app.register_blueprint(product_router, url_prefix='/products')
-    # app.register_blueprint(product_router, url_prefix='/products/create')
+    app.register_blueprint(product_router, url_prefix='/api/products')
 
     @app.route('/')
     def home():
-        redirect('/products')
-        return render_template('product.html')
+        return  render_template('customer.html')
+
+    # Trang quản lý sản phẩm (frontend)
+    @app.route('/product')
+    def product():
+        return render_template('product.html')       
     return app
