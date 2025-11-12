@@ -18,7 +18,8 @@
     animation: fade-in 0.3s ease-out forwards;
   }
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+{% block content %}
 <div
   class="max-w-7xl mx-auto bg-white rounded-xl border-amber-50 overflow-hidden"
 >
@@ -112,7 +113,8 @@
     </div>
   </div>
 </div>
-
+{% endblock %}
+{% block scripts %}
 <script>
     function render(data) {
     const productList = document.getElementById("product_list");
@@ -149,10 +151,7 @@
     });
   }
   async function LoadData() {
-    const response = await fetch(
-      '{{ url_for("product_router.get_products") }}'
-    );
-    // const response = await fetch('/products');
+    const response = await fetch('/api/products');
     const data = await response.json();
     render(data);
   }
@@ -163,11 +162,11 @@
     const keyword = document.getElementById('value').value;
     let data;
     if (keyword === ""){
-        const response = await fetch('{{ url_for("product_router.get_products") }}');
+        const response = await fetch('/api/products/get_products');
         data = await response.json();
     }
     else{
-        const response = await fetch(`/products/search?q=${keyword}`);
+        const response = await fetch(`/api/products/search?q=${keyword}`);
         data = await response.json();
     }
     render(data);
