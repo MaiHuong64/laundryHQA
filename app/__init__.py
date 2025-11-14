@@ -12,7 +12,7 @@ def create_app():
 
     @app.route('/')
     def home():
-        return  render_template('customer.html')
+        return  render_template('index.html')
 
     # Trang quản lý sản phẩm (frontend)
     @app.route('/product')
