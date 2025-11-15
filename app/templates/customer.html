@@ -1,9 +1,7 @@
-{% extends "base.html" %}
+{% import 'components/modal_customer.html' as modal %} {% extends "base.html" %}
 {% block title %}Quản lý khách hàng{% endblock %}
-{% block sidebar %} {% endblock %}
 {% block content %}
-<body class="bg-gray-50 p-4">
-  <div class="max-w-7xl mx-auto bg-white rounded-xl border-amber-50 overflow-hidden">
+<div class="max-w-7xl mx-auto bg-white rounded-xl border-amber-50 overflow-hidden">
     <div class="bg-gray-50 text-gray-800 p-6 border-b border-gray-200 text-left">
       <h1 class="text-3xl md:text-3xl font-bold">👥 Quản Lý Khách Hàng</h1>
     </div>
@@ -34,185 +32,105 @@
       <!-- Search and Action Buttons -->
       <div class="flex flex-col md:flex-row md:items-center justify-start gap-4 mb-8 w-full">
         <form class="flex w-full md:w-1/2 relative">
+          
           <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
             <i class="fas fa-search"></i>
           </span>
-          <input
-            id="searchInput"
-            type="text"
-            name="q"
-            placeholder="Tìm kiếm khách hàng..."
-            class="flex-grow pl-10 pr-4 py-3 border border-gray-300 rounded-l-xl text-gray-700 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200"
-          />
-          <button
-            id="btnSearch"
-            type="button"
-            class="px-4 py-3 bg-indigo-600 text-white font-semibold rounded-r-xl hover:bg-indigo-700 active:bg-indigo-800 focus:ring-2 focus:ring-indigo-300 transition-all duration-200 flex items-center justify-center"
-          >
+          <input id="searchInput" type="text" name="q" placeholder="Tìm kiếm khách hàng..." class="flex-grow pl-10 pr-4 py-3 border border-gray-300 rounded-l-xl text-gray-700 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200"/>
+          
+          <button id="btnSearch" type="button"class="px-4 py-3 bg-indigo-600 text-white font-semibold rounded-r-xl hover:bg-indigo-700 active:bg-indigo-800 focus:ring-2 focus:ring-indigo-300 transition-all duration-200 flex items-center justify-center">
             Tìm
           </button>
         </form>
 
-        <!-- Add Customer Button -->
         <button
-          id="openModal"
-          type="button"
-          class="flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md duration-200"
-        >
+          id="openModal" type="button" class="flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md duration-200">
           <i class="fas fa-plus mr-2"></i> Thêm
+          <!-- {{modal.handle_customer()}} -->
         </button>
 
-        <!-- Export Button -->
-        <button
-          id="exportBtn"
-          class="flex items-center justify-center px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm"
-        >
+        <butto id="exportBtn" class="flex items-center justify-center px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm" >
           <i class="fas fa-file-export mr-2"></i> Xuất Excel
         </button>
+
       </div>
 
-      <!-- Customer Table -->
       <div class="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
         <table class="w-full">
           <thead class="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Mã KH</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Mã Khách hàng</th>
               <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Tên Khách Hàng</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Số Điện Thoại</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Email</th>
-              <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Loại KH</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Tên viết tắt</th>
+              <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Địa chỉ chính</th>
+              <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Chi nhánh</th>
               <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Thao Tác</th>
             </tr>
           </thead>
-          <tbody id="customer_list">
-            <!-- Sample rows -->
-            <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-              <td class="px-6 py-4 text-sm text-gray-700">KH001</td>
-              <td class="px-6 py-4 text-sm text-gray-900 font-medium">Nguyễn Văn A</td>
-              <td class="px-6 py-4 text-sm text-gray-700">0912345678</td>
-              <td class="px-6 py-4 text-sm text-gray-700">nguyenvana@email.com</td>
-              <td class="px-6 py-4 text-center">
-                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">VIP</span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <button class="text-blue-600 hover:text-blue-800 mx-1" title="Xem">
-                  <i class="fas fa-eye"></i>
-                </button>
-                <button class="text-green-600 hover:text-green-800 mx-1" title="Sửa">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="text-red-600 hover:text-red-800 mx-1" title="Xóa">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-              <td class="px-6 py-4 text-sm text-gray-700">KH002</td>
-              <td class="px-6 py-4 text-sm text-gray-900 font-medium">Trần Thị B</td>
-              <td class="px-6 py-4 text-sm text-gray-700">0987654321</td>
-              <td class="px-6 py-4 text-sm text-gray-700">tranthib@email.com</td>
-              <td class="px-6 py-4 text-center">
-                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">Thường</span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <button class="text-blue-600 hover:text-blue-800 mx-1" title="Xem">
-                  <i class="fas fa-eye"></i>
-                </button>
-                <button class="text-green-600 hover:text-green-800 mx-1" title="Sửa">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="text-red-600 hover:text-red-800 mx-1" title="Xóa">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
+          <tbody id="customer_list"></tbody>
         </table>
       </div>
     </div>
   </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    // const openModalBtn = document.getElementById('openModal');
+    // const closeModalBtn = document.getElementById('closeModal');
+    // const modal = document.getElementById('customerModal');
+    // openModalBtn.addEventListener('click', () => {
+    //   modal.classList.remove('hidden');
+    // });
 
-  <!-- Add/Edit Customer Modal -->
-  <div id="customerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-      <div class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-6 rounded-t-xl">
-        <h2 class="text-2xl font-bold">Thêm Khách Hàng Mới</h2>
-      </div>
-      <form class="p-6 space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Mã Khách Hàng</label>
-            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="KH001">
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Tên Khách Hàng *</label>
-            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Nguyễn Văn A" required>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Số Điện Thoại *</label>
-            <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0912345678" required>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-            <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="email@example.com">
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Địa Chỉ</label>
-          <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" rows="3" placeholder="Nhập địa chỉ..."></textarea>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Loại Khách Hàng</label>
-            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-              <option>Thường</option>
-              <option>VIP</option>
-              <option>Doanh Nghiệp</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Ngày Đăng Ký</label>
-            <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-          </div>
-        </div>
-        <div class="flex justify-end gap-3 pt-4">
-          <button type="button" id="closeModal" class="px-6 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all">
-            Hủy
-          </button>
-          <button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all">
-            Lưu
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+    // closeModalBtn.addEventListener('click', () => {
+    //   modal.classList.add('hidden');
+    // });
 
-  <script>
-    // Modal functionality
-    const modal = document.getElementById('customerModal');
-    const openModalBtn = document.getElementById('openModal');
-    const closeModalBtn = document.getElementById('closeModal');
-
-    openModalBtn.addEventListener('click', () => {
-      modal.classList.remove('hidden');
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.add('hidden');
+    function render(data){
+      const cusList = document.getElementById('customer_list');
+      cusList.innerHTML='';
+      console.log(data);
+      if (data.length === 0) {
+      const row = `
+            <tr>
+                <td colspan="5" class="px-6 py-4 text-center text-gray-500 text-sm">Không tìm thấy khách hàng</td>
+            </tr>
+            `;
+      cusList.insertAdjacentHTML("beforeend", row);
+      return;
       }
-    });
+      data.forEach((customer) => {
+        const row =`
+          <tr>
+            <td class="px-6 py-4 text-gray-800 text-sm">${customer.CustomerCode}</td>
+            <td class="px-6 py-4 text-gray-800 text-sm">${customer.FullName}</td>  
+            <td class="px-6 py-4 text-gray-800 text-sm">${customer.ShortName}</td>  
+            <td class="px-6 py-4 text-gray-800 text-sm">${customer.DeliveryAddress}</td>  
+            <td class="px-6 py-4 text-gray-800 text-sm">${customer.OfficeAddress}</td>    
+            <td class="px-6 py-4 text-center w-[120px]">
+              <div class="flex items-center justify-center gap-2">
+                <button class="text-blue-600 hover:text-blue-800" title="Xem">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="text-green-600 hover:text-green-800" title="Sửa">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-800" title="Xóa">
+                    <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+        cusList.insertAdjacentHTML("beforeend", row);
+      });
+    }
+    async function LoadData() {
+      const response = await fetch('/api/customers');
+      const data = await response.json();
+      render(data)
+    }
 
-    // Sample statistics update
-    document.getElementById('totalCustomers').textContent = '2';
-    document.getElementById('vipCustomers').textContent = '1';
-    document.getElementById('newCustomers').textContent = '2';
+    document.addEventListener('DOMContentLoaded', LoadData);
   </script>
-</body>
 {% endblock %}

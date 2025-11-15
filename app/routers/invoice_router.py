@@ -1,30 +1,30 @@
 from flask import Blueprint, request, jsonify
-from models.product import Product
+from models.customer import Custmomer
 from migrations.config import db
 from sqlalchemy import or_
 
-product_router = Blueprint('product_router', __name__)
+customer_router = Blueprint('customer_router', __name__)
 
-@product_router.route('/', methods=['GET'])
+@customer_router.route('/', methods=['GET'])
 def get_products():
     try:
-        all_products = Product.query.all()
-        return jsonify([product.to_dict() for product in all_products])
+        all_customer = Custmomer.query.all()
+        return jsonify([cus.to_dict() for cus in all_customer])
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@product_router.route('/<int:id>', methods=['GET'])
+@customer_router.route('/<int:id>', methods=['GET'])
 def get_product_by_id(id):
-    product = Product.query.get(id)
+    product = Custmomer.query.get(id)
     if product:
         return jsonify(product.to_dict())
     return jsonify({'error': 'Product not found'}), 404
 
-@product_router.route('/create', methods=['POST'])
+@customer_router.route('/create', methods=['POST'])
 def handle_products():
         data = request.get_json()
         try:
-            new_product = Product(
+            new_product = Custmomer(
                 ProductCode=data['ProductCode'],
                 ProductName=data['ProductName'],
                 Brand=data.get('Brand'),
@@ -39,19 +39,19 @@ def handle_products():
             return jsonify({'error': str(e)}), 400
 
 
-@product_router.route('/delete/<int:id>', methods=['DELETE'])
+@customer_router.route('/delete/<int:id>', methods=['DELETE'])
 def delete_product(id):
-    product = Product.query.get(id)
+    product = Custmomer.query.get(id)
     if not product:
         return jsonify({'error': 'Product not found'}), 404
     db.session.delete(product)
     db.session.commit()
     return jsonify({'message': 'Product deleted successfully'})
 
-@product_router.route('/update/<int:id>', methods=['PUT'])
+@customer_router.route('/update/<int:id>', methods=['PUT'])
 def update_product(id):
     data = request.get_json(silent=False)
-    product = Product.query.get(id)
+    product = Custmomer.query.get(id)
     if not product:
         return jsonify({'error': 'Product not found'}), 404
     
@@ -62,14 +62,14 @@ def update_product(id):
 
     db.session.commit()
     return jsonify(product.to_dict())
-@product_router.route('/search', methods=['GET'])
+@customer_router.route('/search', methods=['GET'])
 def search_products():
     query = request.args.get('q', '')
-    results = Product.query.filter(
+    results = Custmomer.query.filter(
         or_(
-            Product.ProductCode.ilike(f'%{query}%'),
-            Product.ProductName.ilike(f'%{query}%'),
-            Product.Brand.ilike(f'%{query}%')
+            Custmomer.ProductCode.ilike(f'%{query}%'),
+            Custmomer.ProductName.ilike(f'%{query}%'),
+            Custmomer.Brand.ilike(f'%{query}%')
         )
     ).all()
     if not results:
