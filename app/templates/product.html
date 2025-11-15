@@ -153,9 +153,9 @@
 
     document.addEventListener('DOMContentLoaded', ()=>{
         const openModalBtn = document.getElementById('openModal');
-        // const closeModal = document.querySelector('button');
+        const closeModal = document.querySelector('button');
         openModalBtn.addEventListener('click', ()=>{ modal.classList.remove('hidden');});
-        // closeModal.addEventListener('click', ()=>{ modal.classList.add('hidden');});
+        closeModal.addEventListener('click', ()=>{ modal.classList.add('hidden');});
     });
 </script>
 {% endblock %}

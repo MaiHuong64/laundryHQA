@@ -14,14 +14,14 @@ def get_customers():
         return jsonify({'error': str(e)}), 500
 
 @customer_router.route('/<int:id>', methods=['GET'])
-def get_product_by_id(id):
+def get_customer_by_id(id):
     cus = Customer.query.get(id)
     if cus:
         return jsonify(cus.to_dict())
     return jsonify({'error': 'Product not found'}), 404
 
 @customer_router.route('/create', methods=['POST'])
-def handle_products():
+def handle_customer():
         data = request.get_json()
         try:
             new_customer = Customer(
@@ -40,7 +40,7 @@ def handle_products():
 
 
 @customer_router.route('/delete/<int:id>', methods=['DELETE'])
-def delete_product(id):
+def delete_customer(id):
     customer = Customer.query.get(id)
     if not customer:
         return jsonify({'error': 'Customer not found'}), 404
@@ -49,21 +49,21 @@ def delete_product(id):
     return jsonify({'message': 'Customer deleted successfully'})
 
 @customer_router.route('/update/<int:id>', methods=['PUT'])
-def update_product(id):
+def update_customer(id):
     data = request.get_json(silent=False)
     customer = Customer.query.get(id)
     if not customer:
-        return jsonify({'error': 'Product not found'}), 404
+        return jsonify({'error': 'Customer not found'}), 404
     
-    customer.FullName = data.get('FullName', customer.ProductName)
+    customer.FullName = data.get('FullName', customer.FullName)
     customer.ShortName = data.get('ShortName', customer.ShortName)
-    customer.DeliveryAddress = data.get('DeliveryAddress', customer.Unit)
-    customer.OfficeAddress = data.get('OfficeAddress', customer.Unit)
+    customer.DeliveryAddress = data.get('DeliveryAddress', customer.DeliveryAddress)
+    customer.OfficeAddress = data.get('OfficeAddress', customer.OfficeAddress)
 
     db.session.commit()
     return jsonify(customer.to_dict())
 @customer_router.route('/search', methods=['GET'])
-def search_products():
+def search_customer():
     query = request.args.get('q', '')
     results = Customer.query.filter(
         or_(
