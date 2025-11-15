@@ -17,11 +17,11 @@
         </div>
             
         <nav class="flex-1 p-4 space-y-1">
-            <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg">
+            <a href="{{ url_for('home') }}" class="flex items-center px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg">
             <i class="fas fa-chart-line w-5 mr-3"></i>
                 Dashboard
             </a>
-            <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+            <a href="{{ url_for('customer') }}" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
             <i class="fas fa-users w-5 mr-3"></i>
                 Quản lý Người dùng
             </a>

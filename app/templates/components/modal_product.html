@@ -3,7 +3,7 @@
     <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fade-in">
         <div class="bg-gray-50 text-gray-800 p-6 rounded-t-xl border-b border-gray-200 flex justify-between items-center">
             <h2 id="modalTitle" class="text-2xl font-bold">Thêm Sản Phẩm Mới</h2>
-            <button id="x" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
         </div>
                 
         <form id="productForm" class="p-6">
@@ -44,13 +44,32 @@
 </div>
 
 <script>
-    const cancelbtn = document.getElementById('cancle');
+    document.addEventListener('DOMContentLoaded', () => {
+        const openModalBtn = document.getElementById('openModal');
+        const modal = document.getElementById('productModal');
+        const closeModal = document.getElementById('closeModalBtn'); 
+        const cancelBtn = document.getElementById('cancle');
+
+        openModalBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        cancelBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.add('hidden');
+        });
+    });
+
     document.getElementById('productForm').addEventListener('submit', async (e) =>{
           const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         e.preventDefault();
        
-        const request = await fetch("{{url_for('product_router.handel_products')}}",{
+        const request = await fetch("{{url_for('product_router.handle_products')}}",{
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -65,14 +84,5 @@
         alert("Đã lưu sản phẩm: " + result.message);
         // console.log(data)
     })
-    document.getElementById("x").addEventListener("click", () => {
-        document.getElementById("productModal").classList.add("hidden");
-    });
-
-    document.getElementById("cancle").addEventListener("click", (e) => {
-        e.preventDefault();
-        document.getElementById("productModal").classList.add("hidden");
-    });
-
 </script>
 {%- endmacro %}
