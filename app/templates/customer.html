@@ -43,13 +43,12 @@
           </button>
         </form>
 
-        <button
-          id="openModal" type="button" class="flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md duration-200">
+        <button id="openModal" type="button" class="flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md duration-200">
           <i class="fas fa-plus mr-2"></i> Thêm
-          <!-- {{modal.handle_customer()}} -->
         </button>
+        {{modal.handle_customer()}}
 
-        <butto id="exportBtn" class="flex items-center justify-center px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm" >
+        <button id="exportBtn" class="flex items-center justify-center px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all shadow-sm" >
           <i class="fas fa-file-export mr-2"></i> Xuất Excel
         </button>
 
@@ -75,25 +74,13 @@
 {% endblock %}
 {% block scripts %}
 <script>
-    // const openModalBtn = document.getElementById('openModal');
-    // const closeModalBtn = document.getElementById('closeModal');
-    // const modal = document.getElementById('customerModal');
-    // openModalBtn.addEventListener('click', () => {
-    //   modal.classList.remove('hidden');
-    // });
-
-    // closeModalBtn.addEventListener('click', () => {
-    //   modal.classList.add('hidden');
-    // });
-
     function render(data){
       const cusList = document.getElementById('customer_list');
       cusList.innerHTML='';
-      console.log(data);
       if (data.length === 0) {
       const row = `
             <tr>
-                <td colspan="5" class="px-6 py-4 text-center text-gray-500 text-sm">Không tìm thấy khách hàng</td>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500 text-sm">Không tìm thấy khách hàng</td>
             </tr>
             `;
       cusList.insertAdjacentHTML("beforeend", row);
@@ -103,7 +90,7 @@
         const row =`
           <tr>
             <td class="px-6 py-4 text-gray-800 text-sm">${customer.CustomerCode}</td>
-            <td class="px-6 py-4 text-gray-800 text-sm">${customer.FullName}</td>  
+          <td class="px-6 py-4 text-gray-800 text-sm">${customer.FullName}</td>  
             <td class="px-6 py-4 text-gray-800 text-sm">${customer.ShortName}</td>  
             <td class="px-6 py-4 text-gray-800 text-sm">${customer.DeliveryAddress}</td>  
             <td class="px-6 py-4 text-gray-800 text-sm">${customer.OfficeAddress}</td>    
