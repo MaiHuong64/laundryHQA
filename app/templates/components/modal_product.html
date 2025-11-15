@@ -65,22 +65,22 @@
     });
 
     document.getElementById('productForm').addEventListener('submit', async (e) =>{
-          const formData = new FormData(e.target);
+        const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         e.preventDefault();
        
-        const request = await fetch("{{url_for('product_router.handle_products')}}",{
+        const res  = await fetch("{{url_for('product_router.handle_products')}}",{
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
-        if (!request.ok){
-            const err = await request.json();
+        if (!res.ok){
+            const err = await res.json();
             console.log(err);
             return;
         }
-        const result = await request.json();
-        console.log("Server trả:", result);
+        const result = await res.json();
+        // console.log("Server trả:", result);
         alert("Đã lưu sản phẩm: " + result.message);
         // console.log(data)
     })
